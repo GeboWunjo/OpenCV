@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -159,7 +159,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 403496, guid: 9f4313a771e05c64d8da7ae6bd19a19f, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -15.7
       objectReference: {fileID: 0}
     - target: {fileID: 403496, guid: 9f4313a771e05c64d8da7ae6bd19a19f, type: 2}
       propertyPath: m_LocalPosition.y
@@ -290,7 +290,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 966710659}
   m_LocalRotation: {x: 0.7071068, y: 0.7071068, z: 0, w: 0}
-  m_LocalPosition: {x: -5, y: 0, z: 0}
+  m_LocalPosition: {x: -20.1, y: -0, z: 0}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_Children: []
   m_Father: {fileID: 0}
@@ -878,7 +878,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1338480674}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 5, y: 0, z: 0}
+  m_LocalPosition: {x: 19.1, y: -0, z: 0}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1037,6 +1037,20 @@ Transform:
 GameObject:
   m_PrefabParentObject: {fileID: 165424, guid: 9f4313a771e05c64d8da7ae6bd19a19f, type: 2}
   m_PrefabInternal: {fileID: 584184074}
+--- !u!114 &1768862434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1768862433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73521f3ac6c0b1e45be1e7381f3d774d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectile: {fileID: 0}
+  speedX: 5
+  speedZ: 0.1
 --- !u!54 &1768862436
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1111,6 +1125,10 @@ Prefab:
     - target: {fileID: 460640, guid: 7e4fe71e8701ed147ac48614044e1c01, type: 2}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 129130, guid: 7e4fe71e8701ed147ac48614044e1c01, type: 2}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7e4fe71e8701ed147ac48614044e1c01, type: 2}
