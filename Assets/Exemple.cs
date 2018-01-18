@@ -166,7 +166,7 @@ public class Exemple : MonoBehaviour {
             isFiring = true;
             Debug.Log("Boule de Feu");
             audio.Play();
-            GameObject clone = Instantiate(particle, transform.position, transform.rotation);
+            GameObject clone = Instantiate(particle, baguette.transform.position, baguette.transform.rotation);
             baguette.transform.Rotate(new Vector3(80, 0, 0));
             baguette.transform.Rotate(Vector3.down * Time.deltaTime, Space.World);
 
@@ -209,9 +209,19 @@ public class Exemple : MonoBehaviour {
             float objectPosition_x = (-1.0f + 2.0f * (float)(moments.M10 / moments.M00) / 640);
             float objectPosition_y = (+1.0f - 2.0f * (float)(moments.M01 / moments.M00) / 480);
             if (!float.IsNaN(objectPosition_x))
-            {
-                Debug.Log(objectPosition_x);
-                baguette.transform.position = new Vector3(-objectPosition_x, baguette.transform.position.y, baguette.transform.position.z);
+            {                
+                {
+                    Debug.Log(objectPosition_x);
+                    float x = 0.0f;
+                    if (objectPosition_x < 0)
+                    {
+                        x = Math.Max(objectPosition_x, -0.4f);
+                    } else
+                    {
+                        x = Math.Min(objectPosition_x, 0.47f);
+                    }                                        
+                    baguette.transform.position = new Vector3(-x, baguette.transform.position.y, baguette.transform.position.z);
+                }                
             }                
         }              
     }
