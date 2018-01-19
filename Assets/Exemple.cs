@@ -79,9 +79,7 @@ public class Exemple : AbstractFrameHandler
     }
 
     // Update is called once per frame
-    void Update() {
-        //ColorObjectDetection();
-        //FaceDetection();        
+    void Update() {       
     }
 
     private void OnDestroy()
@@ -97,6 +95,8 @@ public class Exemple : AbstractFrameHandler
         }
     }
 
+
+    //Deuxième méthode d'obtention d'image via webcam
     private void _handleWebcamQueryFrame(object sender, EventArgs e)
     {
         if (webcam.IsOpened)
@@ -117,21 +117,20 @@ public class Exemple : AbstractFrameHandler
 
     }
 
+    // Detecter les objets rouges, 
+    // Utiliser le plus gros contours, la taille du contour permet de lancer un sort et d'abaisser la baguette
+    // Le centroïde permet à la baguette de bouger dans l'écran.
     private Mat ColorObjectDetection(Mat newImage)
     {
 
         image = newImage;
         Mat imageBis = image.Clone();
-       // imageBlur = webcam.QueryFrame();
-       // imageMedianBlur = webcam.QueryFrame();
-       // imageGaussianBlur = webcam.QueryFrame();
 
         elemntStruct = CvInvoke.GetStructuringElement(ElementShape.Ellipse, new Size(3, 3), new Point(1, 1));
 
         seuilBas = new Hsv(MinH, MinS, MinV);
         seuilHaut = new Hsv(MaxH, MaxS, MaxV);
 
-       // CvInvoke.CvtColor(image, image, ColorConversion.Bgr2Gray);
         CvInvoke.CvtColor(image, image, ColorConversion.Bgr2Hsv);
         CvInvoke.MedianBlur(image, image, kSize);
         Image<Hsv, byte> imageHsv = image.ToImage<Hsv, byte>();
@@ -141,8 +140,9 @@ public class Exemple : AbstractFrameHandler
         CvInvoke.Erode(imGray, imGray, elemntStruct, new Point(1, 1), 3, BorderType.Default, new MCvScalar());
         CvInvoke.Dilate(imGray, imGray, elemntStruct, new Point(1, 1), 3, BorderType.Default, new MCvScalar());
 
-        CvInvoke.FindContours(imGray, contours, null, RetrType.List, ChainApproxMethod.ChainApproxNone);
 
+        //Récuperer les contours, selectionner le plus grand, l'afficher à l'image
+        CvInvoke.FindContours(imGray, contours, null, RetrType.List, ChainApproxMethod.ChainApproxNone);
         biggestContourArea = 0;
         biggestContoursIndex = 0;
         for (int i = 0; i < contours.Size; i++)
@@ -154,14 +154,9 @@ public class Exemple : AbstractFrameHandler
                 biggestContourArea = CvInvoke.ContourArea(contours[i]);
             }
         }
+        CvInvoke.DrawContours(imageBis, contours, biggestContoursIndex, new MCvScalar(150, 0, 0), 5); 
 
-     //   CvInvoke.DrawContours(imGray, contours, biggestContoursIndex, new MCvScalar(150, 150, 0), 5);
-     //   CvInvoke.DrawContours(imageHsv, contours, biggestContoursIndex, new MCvScalar(150, 0, 0), 5);
-        CvInvoke.DrawContours(imageBis, contours, biggestContoursIndex, new MCvScalar(150, 0, 0), 5);
-        //CvInvoke.Imshow("Seuil", imGray);
-
-        //if ((biggestContourAreaOld != 0 ) && (biggestContourArea > (biggestContourAreaOld - (biggestContourArea/2))))        
-
+        //Abaisser/Relever la baguette, lancer le projectil
         if (!isFiring && biggestContourArea > 30000)
         {
             isFiring = true;
@@ -184,24 +179,12 @@ public class Exemple : AbstractFrameHandler
         }
         biggestContourAreaOld = biggestContourArea;
 
+        //Déplace la baguette grace au centroid
         calculPosBaguette();
 
-
-        /*CvInvoke.Blur(image, imageBlur, new Size(5, 5), new Point(1,1), BorderType.Default);
-        CvInvoke.MedianBlur(image, imageMedianBlur, 17);
-        CvInvoke.GaussianBlur(image, imageGaussianBlur, new Size(5, 5), 31,0, BorderType.Default);
-
-        CvInvoke.Imshow("Mon image Blur", imageBlur);
-        CvInvoke.Imshow("Mon image Median", imageMedianBlur);
-        CvInvoke.Imshow("Mon image Gaussian", imageGaussianBlur);*/
-        //CvInvoke.Imshow("Mon image", imageHsv);
-        //CvInvoke.Resize(imageBis, imageBis, new Size(imSize, imSize * webCam.Height / webCam.Width));
         CvInvoke.Flip(imageBis, imageBis, FlipType.Horizontal);
-      //  CvInvoke.Imshow("Flipendo", imageBis);
 
         return imageBis; 
-        //CvInvoke.Resize(image, image, new Size(300, 300));
-        //writer.Write(image);
     }
 
     private void calculPosBaguette(){
