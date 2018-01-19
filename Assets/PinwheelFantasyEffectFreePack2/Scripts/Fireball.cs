@@ -10,6 +10,11 @@ public class Fireball : MonoBehaviour {
     public GameObject explosionParticle;
     private bool isColliding = false;
 
+    private void Start()
+    {
+        Destroy(this.gameObject, 5); 
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         isColliding = true;
