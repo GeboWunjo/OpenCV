@@ -9,7 +9,8 @@ using System;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 
-public class Exemple : MonoBehaviour {
+public class Exemple : AbstractFrameHandler
+{
 
     public int widthBlur = 0;
     public int heightBlur = 0;
@@ -79,7 +80,7 @@ public class Exemple : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        ColorObjectDetection();
+        //ColorObjectDetection();
         //FaceDetection();        
     }
 
@@ -111,26 +112,26 @@ public class Exemple : MonoBehaviour {
                 CvInvoke.Rectangle(image, face, new MCvScalar(0, 180, 0), 5);
             }
             CvInvoke.Flip(image, image, FlipType.Horizontal);
-            CvInvoke.Imshow("Ma tete", image);
+         //   CvInvoke.Imshow("Ma tete", image);
         }
 
     }
 
-    private void ColorObjectDetection()
+    private Mat ColorObjectDetection(Mat newImage)
     {
 
-        image = webcam.QueryFrame();
-        Mat imageBis = webcam.QueryFrame();
-        imageBlur = webcam.QueryFrame();
-        imageMedianBlur = webcam.QueryFrame();
-        imageGaussianBlur = webcam.QueryFrame();
+        image = newImage;
+        Mat imageBis = image.Clone();
+       // imageBlur = webcam.QueryFrame();
+       // imageMedianBlur = webcam.QueryFrame();
+       // imageGaussianBlur = webcam.QueryFrame();
 
         elemntStruct = CvInvoke.GetStructuringElement(ElementShape.Ellipse, new Size(3, 3), new Point(1, 1));
 
         seuilBas = new Hsv(MinH, MinS, MinV);
         seuilHaut = new Hsv(MaxH, MaxS, MaxV);
 
-        //CvInvoke.CvtColor(image, image, ColorConversion.Bgr2Gray);
+       // CvInvoke.CvtColor(image, image, ColorConversion.Bgr2Gray);
         CvInvoke.CvtColor(image, image, ColorConversion.Bgr2Hsv);
         CvInvoke.MedianBlur(image, image, kSize);
         Image<Hsv, byte> imageHsv = image.ToImage<Hsv, byte>();
@@ -154,8 +155,8 @@ public class Exemple : MonoBehaviour {
             }
         }
 
-        CvInvoke.DrawContours(imGray, contours, biggestContoursIndex, new MCvScalar(150, 150, 0), 5);
-        CvInvoke.DrawContours(imageHsv, contours, biggestContoursIndex, new MCvScalar(150, 0, 0), 5);
+     //   CvInvoke.DrawContours(imGray, contours, biggestContoursIndex, new MCvScalar(150, 150, 0), 5);
+     //   CvInvoke.DrawContours(imageHsv, contours, biggestContoursIndex, new MCvScalar(150, 0, 0), 5);
         CvInvoke.DrawContours(imageBis, contours, biggestContoursIndex, new MCvScalar(150, 0, 0), 5);
         //CvInvoke.Imshow("Seuil", imGray);
 
@@ -194,8 +195,11 @@ public class Exemple : MonoBehaviour {
         CvInvoke.Imshow("Mon image Median", imageMedianBlur);
         CvInvoke.Imshow("Mon image Gaussian", imageGaussianBlur);*/
         //CvInvoke.Imshow("Mon image", imageHsv);
+        //CvInvoke.Resize(imageBis, imageBis, new Size(imSize, imSize * webCam.Height / webCam.Width));
         CvInvoke.Flip(imageBis, imageBis, FlipType.Horizontal);
-        CvInvoke.Imshow("Flipendo", imageBis);
+      //  CvInvoke.Imshow("Flipendo", imageBis);
+
+        return imageBis; 
         //CvInvoke.Resize(image, image, new Size(300, 300));
         //writer.Write(image);
     }
@@ -224,5 +228,10 @@ public class Exemple : MonoBehaviour {
                 }                
             }                
         }              
+    }
+
+    public override Mat handleFrame(Mat frame)
+    {
+        return ColorObjectDetection(frame); 
     }
 }

@@ -32,7 +32,7 @@ public class FaceDetector : AbstractFrameHandler {
 
 	// As the mouth detector does not detect the mouth every frame, we store the last position of the mouth, in order to use it when the mouth is not detected;
 	Rectangle lastMouth;
-
+    private int imSize = 400; 
 	// A stack containing the status of the mouth during the frames. Useful to generate opened and closed mouth event
 	/*
 	 * An event of opened or closed mouth is obtained when the stack has a certain number of Closed or Opened values.
@@ -68,9 +68,12 @@ public class FaceDetector : AbstractFrameHandler {
 		if (image != null)
 		{
 			Mat imageOrig = image.Clone();
-
-			// Original image (MAT) into image format
-			Image<Bgr,System.Byte> imageFrame = image.ToImage<Bgr,System.Byte>();
+            // Reducing the size of the image in order to increase the performance
+            CvInvoke.Resize(imageOrig, imageOrig, new Size(imSize, imSize * imageOrig.Height / imageOrig.Width));
+            // Image is originally inverted : flipping
+            CvInvoke.Flip(imageOrig, imageOrig, FlipType.Horizontal);
+            // Original image (MAT) into image format
+            Image<Bgr,System.Byte> imageFrame = image.ToImage<Bgr,System.Byte>();
 
 			// Face Detection
 			Rectangle selectedFace = detectFace( imageFrame );

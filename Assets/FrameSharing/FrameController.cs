@@ -30,7 +30,7 @@ public class FrameController : MonoBehaviour {
 	VideoCapture webCam;						// Obtains the images from the camera
 	int imAddress = 0;							// Indicates the address of the image (0 for webcam)
 
-	int imSize = 400;							// Dimension of the window to show the images (used to redimension the image, in order to reduce the size of the image and increase preformance)
+	int imSize = 600;							// Dimension of the window to show the images (used to redimension the image, in order to reduce the size of the image and increase preformance)
 
 	Mat imageOrig;								// Image that stores the last webcam image
 
@@ -61,7 +61,7 @@ public class FrameController : MonoBehaviour {
 				// Reducing the size of the image in order to increase the performance
 				CvInvoke.Resize(imageOrig, imageOrig, new Size(imSize, imSize*webCam.Height/webCam.Width));
 				// Image is originally inverted : flipping
-				CvInvoke.Flip(imageOrig, imageOrig, FlipType.Horizontal);
+				//CvInvoke.Flip(imageOrig, imageOrig, FlipType.Horizontal);
 
 				// Send the frame to registered handlers : Face
 				if( frameHandlers_Face != null ){
