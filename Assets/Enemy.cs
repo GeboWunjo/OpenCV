@@ -15,7 +15,7 @@ public class Enemy : MonoBehaviour {
     private Transform trans;
     private bool turnDirection = false;
     private bool timerRefresh = false; 
-    private bool isFreeze = false;
+    private static bool isFreeze = false;
     // Use this for initialization
     void Start()
     {
@@ -62,11 +62,11 @@ public class Enemy : MonoBehaviour {
         {
             Destroy(this.gameObject);
         }
-        
-        if (collision.gameObject.tag == "ProjectileFreeze")
-        {
-            isFreeze = true; 
-        }
+    }
+
+    public static void Freeze()
+    {
+        isFreeze = true;         
     }
 
     

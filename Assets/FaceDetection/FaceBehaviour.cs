@@ -2,12 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class FaceBehaviour : FaceAction {
+
+
+    private GameObject[] enemies; 
     #region implemented abstract members of FaceAction
    
     public override void OpenMouth ()
 	{
-		Debug.Log("open");
+		//Debug.Log("open");
+        Enemy.Freeze();
+        
+
     }
 	public override void CloseMouth ()
 	{
