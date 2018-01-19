@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class FaceBehaviour : FaceAction {
-	#region implemented abstract members of FaceAction
-	public override void OpenMouth ()
+    #region implemented abstract members of FaceAction
+   
+    public override void OpenMouth ()
 	{
 		Debug.Log("open");
-	}
+    }
 	public override void CloseMouth ()
 	{
 		Debug.Log("close");
