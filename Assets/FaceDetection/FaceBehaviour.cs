@@ -11,10 +11,8 @@ public class FaceBehaviour : FaceAction {
    
     public override void OpenMouth ()
 	{
-		//Debug.Log("open");
+		Debug.Log("open");
         Enemy.Freeze();
-        
-
     }
 	public override void CloseMouth ()
 	{

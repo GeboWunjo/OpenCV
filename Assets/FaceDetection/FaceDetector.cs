@@ -29,10 +29,11 @@ public class FaceDetector : AbstractFrameHandler {
 
 	string imNameOrig = "Image";				// Name of the window to show the images (ignored since we show the image into a unity scene)
 	string projPath = "C:\\Users\\Edwyn Luis\\Documents\\Lyon\\gamagora\\vision\\";	// Path to the project [Change your path]
+	int imSize = 400;							// Dimension of the window to show the images (used to redimension the image, in order to reduce the size of the image and increase preformance)
 
 	// As the mouth detector does not detect the mouth every frame, we store the last position of the mouth, in order to use it when the mouth is not detected;
 	Rectangle lastMouth;
-    private int imSize = 400; 
+    
 	// A stack containing the status of the mouth during the frames. Useful to generate opened and closed mouth event
 	/*
 	 * An event of opened or closed mouth is obtained when the stack has a certain number of Closed or Opened values.
@@ -72,8 +73,9 @@ public class FaceDetector : AbstractFrameHandler {
             CvInvoke.Resize(imageOrig, imageOrig, new Size(imSize, imSize * imageOrig.Height / imageOrig.Width));
             // Image is originally inverted : flipping
             CvInvoke.Flip(imageOrig, imageOrig, FlipType.Horizontal);
+
             // Original image (MAT) into image format
-            Image<Bgr,System.Byte> imageFrame = image.ToImage<Bgr,System.Byte>();
+			Image<Bgr,System.Byte> imageFrame = imageOrig.ToImage<Bgr,System.Byte>();
 
 			// Face Detection
 			Rectangle selectedFace = detectFace( imageFrame );
@@ -84,12 +86,7 @@ public class FaceDetector : AbstractFrameHandler {
 			// if mouth was not detected, use the position of last mouth
 			if( selectedMouth.IsEmpty ){
 				if( !lastMouth.IsEmpty ){
-					selectedMouth = lastMouth;
-					// increase area of the mouth (open mouths are not well detected)
-					selectedMouth.X -= Mathf.FloorToInt( selectedMouth.Width*0.1f );
-					selectedMouth.Y += Mathf.FloorToInt( selectedMouth.Height*0.1f );
-					selectedMouth.Height += Mathf.FloorToInt( selectedMouth.Height*0.2f );
-					selectedMouth.Width += Mathf.FloorToInt( selectedMouth.Width*0.2f );
+					selectedMouth = adjustMouthToImage( lastMouth, imageOrig );
 				}
 				else{
 					// do anything
@@ -104,19 +101,22 @@ public class FaceDetector : AbstractFrameHandler {
 			imageFrame.Draw(selectedMouth, new Bgr(System.Drawing.Color.Aqua), 3); //the detected face(s) is highlighted here using a box that is drawn around it/them
 
 			if( !selectedMouth.IsEmpty ){
-				float ratio = mouthRatio( detectMouthContours( image, selectedMouth ) );
+				
+				float ratio = mouthRatio( detectMouthContours( imageOrig, selectedMouth ) );
 				if( ratio > 0.05 ){
 					// Check Contours Ratio (Width x Height) to determines if the mouth is opened or closed
 					UpdateRatioStack( ratio );
 				}
 			}
 				
-			image = imageFrame.Mat;
+			imageOrig = imageFrame.Mat;
 
 			//CvInvoke.Imshow(imNameOrig, image);
 
 			// Storing
 			//writer.Write(imageOrig);
+
+			return imageOrig;
 		}
 		return image;
 	}
@@ -172,6 +172,28 @@ public class FaceDetector : AbstractFrameHandler {
 			return selectedMouth;
 		}
 		return Rectangle.Empty;
+	}
+
+	Rectangle adjustMouthToImage( Rectangle _mouth, Mat image ){
+		Rectangle newMouth = _mouth;
+
+		// increase area of the mouth (open mouths are not well detected)
+		newMouth.X -= Mathf.FloorToInt( newMouth.Width*0.1f );
+		newMouth.Y += Mathf.FloorToInt( newMouth.Height*0.1f );
+		newMouth.Height += Mathf.FloorToInt( newMouth.Height*0.2f );
+		newMouth.Width += Mathf.FloorToInt( newMouth.Width*0.2f );
+
+		int newX_min = Mathf.Max( 0, Mathf.Min( image.Width-1, newMouth.X ) );
+		int newX_max = Mathf.Min( image.Width-1, newMouth.X+newMouth.Width );
+		int newY_min = Mathf.Max( 0, Mathf.Min( image.Height-1, newMouth.Y ) );
+		int newY_max = Mathf.Min( image.Height-1, newMouth.Y+newMouth.Height );
+
+		newMouth.X = newX_min;
+		newMouth.Y = newY_min;
+		newMouth.Width = newX_max - newX_min;
+		newMouth.Height = newY_max - newY_min;
+
+		return newMouth;
 	}
 
 	// mouth contour is the biggest detected in the mouth area
